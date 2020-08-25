@@ -1,11 +1,11 @@
 import numpy as np
-from EightPuzzleGame_State import State
+from .state import State
 
-'''
+"""
 This class implement one of the Uinformed Search algorithm
 You may choose to implement the Breadth-first or Depth-first or Iterative-Deepening search algorithm
 
-'''
+"""
 
 
 class UninformedSearchSolver:
@@ -21,13 +21,8 @@ class UninformedSearchSolver:
         self.openlist.append(current)
 
     def check_inclusive(self, s):
-    #TODO your code start here
-       
-       
-       
-       
-    #TODO your code end here
-
+        # TODO your code start here
+        pass
 
     """
      * four types of walks
@@ -35,15 +30,10 @@ class UninformedSearchSolver:
      *  ↑ ↓ ← → (move up, move down, move left, move right)
      * the blank tile is represent by '0'
     """
+
     def state_walk(self):
-    #TODO your code start here
-       
-       
-       
-       
-    #TODO your code end here
-
-
+        # TODO your code start here
+        pass
 
 
     # Check the following to make it work properly
