@@ -1,7 +1,6 @@
 import unittest
 from game.state import State
 import numpy as np
-import ipdb
 
 
 class TestState(unittest.TestCase):
@@ -22,13 +21,12 @@ class TestState(unittest.TestCase):
             state.move("up")
 
     def test_move_right(self):
-        initial_state = np.array([[1, 2, 3], [0, 4, 6], [7, 5, 8]])
-        expected_state = np.array([[1, 2, 3], [4, 0, 6], [7, 5, 8]])
+        initial_state = np.array([[1, 2, 3], [4, 0, 6], [7, 5, 8]])
+        expected_state = np.array([[1, 2, 3], [4, 6, 0], [7, 5, 8]])
+        old_state = State(initial_state, 0, 0)
+        new_state = old_state.move("right")
 
-        state = State(initial_state, 0, 0)
-        state.move("right")
-
-        self.assertTrue(np.all(state.tile_seq == expected_state))
+        self.assertTrue(np.all(new_state.tile_seq == expected_state))
 
         initial_state = np.array([[1, 2, 3], [4, 5, 0], [6, 7, 8]])
         state = State(initial_state, 0, 0)
@@ -77,12 +75,12 @@ class TestState(unittest.TestCase):
         neighbors = initial_state.neighbors()
         self.assertTrue(
             np.all(
-                [x.tile_seq for x in neighbors]
-                == [
+                np.array([x.tile_seq for x in neighbors])
+                == np.array([
                     up_state.tile_seq,
                     left_state.tile_seq,
                     down_state.tile_seq,
                     right_state.tile_seq,
-                ]
+                ])
             )
         )

@@ -1,6 +1,7 @@
 import numpy as np
 from copy import deepcopy
 from typing import List
+import ipdb
 
 
 class State:
@@ -61,7 +62,6 @@ class State:
             target_x = current_x + 1
             target_y = current_y
 
-            # ipdb.set_trace()
             new_state.tile_seq[current_y][current_x] = new_state.tile_seq[target_y][
                 target_x
             ]
