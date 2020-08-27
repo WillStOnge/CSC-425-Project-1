@@ -230,42 +230,36 @@ class InformedSearchSolver:
         # (1) Tiles out of place
         h1 = 0
         # TODO your code start here
-        """
-         *loop over the curr_seq
-         *check the every entry in curr_seq with goal_seq
-        """
+        for r in range(len(curr_seq)):
+            for c in range(len(curr_seq[r])):
+                if curr_seq[r][c] != goal_seq[r][c]:
+                    h1 += 1
+
+
         # TODO your code end here
 
         # (2) Sum of distances out of place
         h2 = 0
         # TODO your code start here
-        """
-         *loop over the goal_seq and curr_seq in nested way
-         *locate the entry which has the same value in 
-         *curr_seq and goal_seq then calculate the offset
-         *through the absolute value of two differences
-         *of curr_row-goal_row and curr_col-goal_col
-         *absoulte value can be calculated by abs(...)
-        """
+        for curr_row in range(len(curr_seq)):
+            for curr_col in range(len(curr_seq[curr_row])):
+                for goal_row in range(len(goal_seq)):
+                    for goal_col in range(len(goal_seq[goal_row])):
+                        if curr_seq[curr_row][curr_col] == goal_seq[goal_row][goal_col]:
+                            h2 += abs(curr_row-goal_row) + abs(curr_col-goal_col)
         # TODO your code end here
 
         # (3) 2 x the number of direct tile reversals
         h3 = 0
         # TODO your code start here
-        """
-         *loop over the curr_seq
-         *use a Γ(gamma)shap slider to walk throught curr_seq and goal_seq
-         *rule out the entry with value 0
-         *set the boundry restriction
-         *don't forget to time 2 at last
-         *for example 
-         *goal_seq  1 2 3   curr_seq  2 1 3 the Γ shape starts 
-         *       4 5 6          4 5 6
-         *       7 8 0          7 8 0
-         *with 1 2 in goal_seq and 2 1 in curr_seq thus the 
-         *    4             4
-         *reversal is 1 2 and 2 1
-        """
+        for row in range(len(goal_seq)):
+            for col in range(len(goal_seq[row])-1):
+                if goal_seq[row][col] == curr_seq[row+1][col] and goal_seq[row+1][col] == curr_seq[row][col] and \
+                        curr_seq[row][col] != 0 and curr_seq[row+1][col] != 0:
+                    h3 += 1
+                elif goal_seq[row][col] == curr_seq[row][col+1] and goal_seq[row][col+1] == curr_seq[row][col] and \
+                        curr_seq[row][col] != 0 and curr_seq[row][col+1] != 0:
+                    h3 += 1
         # TODO your code end here
 
         h3 *= 2

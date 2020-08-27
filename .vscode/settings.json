@@ -11,5 +11,7 @@
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.nosetestsEnabled": false,
-    "python.testing.unittestEnabled": true
+    "python.testing.unittestEnabled": false,
+    "python.testing.promptToConfigure": false,
+    "python.pythonPath": "C:\\Users\\treyr\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe"
 }
