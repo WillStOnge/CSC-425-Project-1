@@ -133,7 +133,7 @@ class State:
         return not self == obj
 
     def __hash__(self) -> str:
-        return hash((self.depth, self.weight, self.tile_seq.tostring()))
+        return hash((self.depth, self.weight, self.tile_seq.tobytes()))
 
     def __str__(self):
         return self.tile_seq.tostring()

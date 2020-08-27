@@ -16,7 +16,7 @@ class TestUninformedSolver(unittest.TestCase):
 
         uninformed_solver = UninformedSearchSolver(init, goal)
         while not uninformed_solver.current_state == uninformed_solver.target_state:
-            uninformed_solver.state_walk()
+            uninformed_solver.next_state()
             # print(succ)
         self.assertTrue(
             np.all(goal.tile_seq == uninformed_solver.current_state.tile_seq))
