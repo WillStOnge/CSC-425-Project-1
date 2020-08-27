@@ -272,6 +272,7 @@ class InformedSearchSolver:
 
         # set the heuristic value for current state
         current.weight = current.depth + h1 + h2 + h3
+
     # You can choose to print all the states on the search path, or just the start and goal state
     def run(self):
         # output the start state
