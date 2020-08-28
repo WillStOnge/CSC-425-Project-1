@@ -5,7 +5,7 @@ CSC 425 525 Artificial Intelligence
 Instructor: Dr. Junxiu Zhou
 Semester: Fall 2020
 
-Your name:
+Your names: Arseny Poga, Will St. Onge, and Trey Regruth
 """
 
 import numpy as np
