@@ -1,17 +1,21 @@
-import numpy as np
 from .state import State
 
 """
-This class implement the Best-First-Search (BFS) algorithm along with the Heuristic search strategies
+This class implement the Best-First-Search (BFS) algorithm
+along with the Heuristic search strategies
 
-In this algorithm, an OPEN list is used to store the unexplored states and 
-a CLOSE list is used to store the visited state. OPEN list is a priority queue. 
-The priority is insured through sorting the OPEN list each time after new states are generated 
-and added into the list. The heuristics are used as sorting criteria.
+In this algorithm, an OPEN list is used to store the unexplored states and
+a CLOSE list is used to store the visited state. OPEN list is a priority queue.
+The priority is insured through sorting the OPEN list each time after new
+states are generated and added into the list.
+The heuristics are used as sorting criteria.
 
-In this informed search, reducing the state space search complexity is the main criterion. 
-We define heuristic evaluations to reduce the states that need to be checked every iteration. 
-Evaluation function is used to express the quality of informedness of a heuristic algorithm. 
+In this informed search, reducing the state space search complexity is
+the main criterion.
+We define heuristic evaluations to reduce the states that
+need to be checked every iteration.
+Evaluation function is used to express the quality of informedness
+of a heuristic algorithm.
 
 """
 
