@@ -5,9 +5,9 @@ import ipdb
 
 
 class State:
-    def __init__(self, tile_seq=[], depth=0, weight=0):
+    def __init__(self, tile_seq=[], pathLength=0, weight=0):
         self.tile_seq = tile_seq
-        self.depth = depth
+        self.pathLength = pathLength
         self.weight = weight
 
     def flatten(self) -> List[int]:
@@ -37,7 +37,7 @@ class State:
             IndexError: If the move is unsupported
         """
 
-        new_state = State(deepcopy(self.tile_seq), self.depth, self.weight)
+        new_state = State(deepcopy(self.tile_seq), self.pathLength, self.weight)
 
         coordinates = np.argwhere(new_state.tile_seq == 0).flatten()
         current_x, current_y = coordinates[1], coordinates[0]
@@ -49,10 +49,7 @@ class State:
             target_x = current_x
             target_y = current_y - 1
 
-            # ipdb.set_trace()
-            new_state.tile_seq[current_y][current_x] = new_state.tile_seq[target_y][
-                target_x
-            ]
+            new_state.tile_seq[current_y][current_x] = new_state.tile_seq[target_y][target_x]
             new_state.tile_seq[target_y][target_x] = 0
 
         elif direction == "right":
@@ -62,9 +59,7 @@ class State:
             target_x = current_x + 1
             target_y = current_y
 
-            new_state.tile_seq[current_y][current_x] = new_state.tile_seq[target_y][
-                target_x
-            ]
+            new_state.tile_seq[current_y][current_x] = new_state.tile_seq[target_y][target_x]
             new_state.tile_seq[target_y][target_x] = 0
 
         elif direction == "down":
@@ -74,9 +69,7 @@ class State:
             target_x = current_x
             target_y = current_y + 1
 
-            new_state.tile_seq[current_y][current_x] = new_state.tile_seq[target_y][
-                target_x
-            ]
+            new_state.tile_seq[current_y][current_x] = new_state.tile_seq[target_y][target_x]
             new_state.tile_seq[target_y][target_x] = 0
 
         elif direction == "left":
@@ -86,9 +79,7 @@ class State:
             target_x = current_x - 1
             target_y = current_y
 
-            new_state.tile_seq[current_y][current_x] = new_state.tile_seq[target_y][
-                target_x
-            ]
+            new_state.tile_seq[current_y][current_x] = new_state.tile_seq[target_y][target_x]
             new_state.tile_seq[target_y][target_x] = 0
 
         return new_state
@@ -133,7 +124,7 @@ class State:
         return not self == obj
 
     def __hash__(self) -> str:
-        return hash((self.depth, self.weight, self.tile_seq.tobytes()))
+        return hash((self.pathLength, self.weight, self.tile_seq.tobytes()))
 
     def __str__(self):
         return self.tile_seq.tostring()
