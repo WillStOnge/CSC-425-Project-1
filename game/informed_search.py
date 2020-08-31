@@ -13,6 +13,8 @@ In this informed search, reducing the state space search complexity is the main 
 We define heuristic evaluations to reduce the states that need to be checked every iteration. 
 Evaluation function is used to express the quality of informedness of a heuristic algorithm. 
 """
+
+
 class InformedSearchSolver:
     current = State()
     goal = State()
@@ -28,8 +30,9 @@ class InformedSearchSolver:
     def sortFun(self, e):
         return e.weight
 
-    """ Check if the generated state is in open or closed. """
+
     def check_inclusive(self, s):
+        """ Check if the generated state is in open or closed. """
         in_open = 0
         in_closed = 0
         ret = [-1, -1]
@@ -54,26 +57,30 @@ class InformedSearchSolver:
             ret[0] = 3  # the child is already in closed
         return ret
 
-    """ Checks the inclusivity in the open/closed lists and moves the states accordingly. """
-    def check_conditions(self, state):
+    def check_conditions(self, state: State):
+        """ Checks the inclusivity in the open/closed lists and moves the states accordingly.
+        Args:
+            `state` - State object
+        """
         flag = self.check_inclusive(state)
 
-        if flag[0] == 1: # State is in neither list
+        if flag[0] == 1:  # State is in neither list
             self.heuristic_test(state)
             openList.append(state)
-        elif flag[0] == 2: # State is in the open list
+        elif flag[0] == 2:  # State is in the open list
             if state.depth < self.current.depth:
-                test = None # Give the state on open the shorter path
-        else: # State is in the closed list
+                test = None  # Give the state on open the shorter path
+        else:  # State is in the closed list
             if state.depth < self.current.depth:
                 closeList.remove(state)
                 openList.append(state)
 
-    """
-     * Four possible directions (up, down, left, and right).
-     * Uses the best first search algorithm. The blank tile is represent by '0'.
-    """
     def next_state(self):
+        """Four possible directions (up, down, left, and right).
+        
+        
+        Uses the best first search algorithm. The blank tile is represent by '0'.
+        """
         # Add closed state
         self.closeList.append(self.current)
         self.openList.remove(self.current)
@@ -115,20 +122,19 @@ class InformedSearchSolver:
         self.openList.sort(key=self.sortFun)
         self.current = self.openList[0]
 
-    """
-     * Solve the game using heuristic search strategies
-     
-     * There are three types of heuristic rules:
-     * (1) Tiles out of place
-     * (2) Sum of distances out of place
-     * (3) 2 x the number of direct tile reversals
-     
-     * evaluation function
-     * f(n) = g(n) + h(n)
-     * g(n) = depth of path length to start state
-     * h(n) = (1) + (2) + (3)
-    """
     def heuristic_test(self, current):
+        """Solve the game using heuristic search strategies
+        
+        * There are three types of heuristic rules:
+        * (1) Tiles out of place
+        * (2) Sum of distances out of place
+        * (3) 2 x the number of direct tile reversals
+        
+        * evaluation function
+        * f(n) = g(n) + h(n)
+        * g(n) = depth of path length to start state
+        * h(n) = (1) + (2) + (3)
+        """
         curr_seq = current.tile_seq
         goal_seq = self.goal.tile_seq
 
@@ -146,17 +152,25 @@ class InformedSearchSolver:
                 for goal_row in range(len(goal_seq)):
                     for goal_col in range(len(goal_seq[goal_row])):
                         if curr_seq[curr_row][curr_col] == goal_seq[goal_row][goal_col]:
-                            h2 += abs(curr_row-goal_row) + abs(curr_col-goal_col)
+                            h2 += abs(curr_row - goal_row) + abs(curr_col - goal_col)
 
         # (3) Twice the number of direct tile reversals
         h3 = 0
-        for row in range(len(goal_seq)-1):
-            for col in range(len(goal_seq[row])-1):
-                if goal_seq[row][col] == curr_seq[row+1][col] and goal_seq[row+1][col] == curr_seq[row][col] and \
-                        curr_seq[row][col] != 0 and curr_seq[row+1][col] != 0:
+        for row in range(len(goal_seq) - 1):
+            for col in range(len(goal_seq[row]) - 1):
+                if (
+                    goal_seq[row][col] == curr_seq[row + 1][col]
+                    and goal_seq[row + 1][col] == curr_seq[row][col]
+                    and curr_seq[row][col] != 0
+                    and curr_seq[row + 1][col] != 0
+                ):
                     h3 += 1
-                elif goal_seq[row][col] == curr_seq[row][col+1] and goal_seq[row][col+1] == curr_seq[row][col] and \
-                        curr_seq[row][col] != 0 and curr_seq[row][col+1] != 0:
+                elif (
+                    goal_seq[row][col] == curr_seq[row][col + 1]
+                    and goal_seq[row][col + 1] == curr_seq[row][col]
+                    and curr_seq[row][col] != 0
+                    and curr_seq[row][col + 1] != 0
+                ):
                     h3 += 1
         h3 *= 2
 
