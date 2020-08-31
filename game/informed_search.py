@@ -129,12 +129,9 @@ class InformedSearchSolver:
         goal_seq = self.goal.tile_seq
 
         # (1) Tiles out of place
-        h1 = 0
-        for r in range(len(curr_seq)):
-            for c in range(len(curr_seq[r])):
-                if curr_seq[r][c] != goal_seq[r][c]:
-                    h1 += 1
-
+        
+        h1 = np.sum(curr_seq != goal_seq)
+        
         # (2) Sum of distances out of place
         h2 = 0
         for curr_row in range(len(curr_seq)):
