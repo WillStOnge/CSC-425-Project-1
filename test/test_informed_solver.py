@@ -17,5 +17,4 @@ class TestInformedSolver(unittest.TestCase):
         informed_solver = InformedSearchSolver(init, goal)
         while not informed_solver.current == informed_solver.goal:
             informed_solver.next_state()
-            # print(succ)
         self.assertTrue(np.all(goal.tile_seq == informed_solver.current_state.tile_seq))
