@@ -82,15 +82,9 @@ class InformedSearchSolver:
         self.openList.remove(self.current)
         # Move to the next heuristic state
         walk_state = self.current.tile_seq
-        row = 0
-        col = 0
 
-        for i in range(len(walk_state)):
-            for j in range(len(walk_state[i])):
-                if walk_state[i, j] == 0:
-                    row = i
-                    col = j
-                    break
+        coordinates = np.argwhere(new_state.tile_seq == 0).flatten()
+        col, row = coordinates[1], coordinates[0]
 
         self.depth += 1
 
