@@ -37,17 +37,13 @@ class InformedSearchSolver:
         in_closed = 0
         ret = [-1, -1]
 
-        for item in self.openList:
-            if item.equals(s):
-                in_open = 1
-                ret[1] = self.openList.index(item)
-                break
+        if item is in self.openList:
+            in_open = 1
+            ret[1] = self.openList.index(item)
 
-        for item in self.closeList:
-            if item.equals(s):
-                in_closed = 1
-                ret[1] = self.closeList.index(item)
-                break
+        if item is in self.closeList
+            in_closed = 1
+            ret[1] = self.closeList.index(item)
 
         if in_open == 0 and in_closed == 0:
             ret[0] = 1  # the child is not in open or closed
