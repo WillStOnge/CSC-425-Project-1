@@ -252,7 +252,7 @@ class InformedSearchSolver:
         # (3) 2 x the number of direct tile reversals
         h3 = 0
         # TODO your code start here
-        for row in range(len(goal_seq)):
+        for row in range(len(goal_seq)-1):
             for col in range(len(goal_seq[row])-1):
                 if goal_seq[row][col] == curr_seq[row+1][col] and goal_seq[row+1][col] == curr_seq[row][col] and \
                         curr_seq[row][col] != 0 and curr_seq[row+1][col] != 0:
