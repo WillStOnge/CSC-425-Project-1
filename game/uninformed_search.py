@@ -6,6 +6,7 @@ import numpy as np
 class UninformedSearchSolver:
     """Implements BFS to find a solution to an 8-puzzle problem
     """
+
     opened = deque()
     closed = set()
     depth = 0
@@ -24,8 +25,8 @@ class UninformedSearchSolver:
         inv_count = 0
         arr = self.current_state.flatten()
         for i in range(0, 9):
-            for j in range(i+1, 9):
-                if (arr[j] and arr[i] and arr[i] > arr[j]):
+            for j in range(i + 1, 9):
+                if arr[j] and arr[i] and arr[i] > arr[j]:
                     inv_count += 1
         return inv_count % 2 == 0
 
