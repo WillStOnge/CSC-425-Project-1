@@ -109,7 +109,7 @@ class InformedSearchSolver:
             self.check_conditions(tempState)
 
         # Sort the open list first by h(n) then g(n)
-        self.openList.sort(key=self.sortFun)
+        self.openList.sort(key=lambda a: a.weight)
         self.current = self.openList[0]
 
     def heuristic_test(self, current):
