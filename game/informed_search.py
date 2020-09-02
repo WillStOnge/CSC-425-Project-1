@@ -13,35 +13,31 @@ In this informed search, reducing the state space search complexity is the main 
 We define heuristic evaluations to reduce the states that need to be checked every iteration. 
 Evaluation function is used to express the quality of informedness of a heuristic algorithm. 
 """
+
+
 class InformedSearchSolver:
-    current = State()
-    goal = State()
-    openList = []
-    closeList = []
+    opened = []
+    closed = []
     depth = 0
 
-    def __init__(self, current, goal):
-        self.current = current
-        self.goal = goal
-        self.openList.append(current)
+    def __init__(self, current: State, target: State):
+        self.current_state = current
+        self.target_state = target
+        self.opened.append(current)
 
-    """ Check if the generated state is in open or closed. """
-    def check_inclusive(self, s):
+    def check_inclusive(self, item: State):
+        """ Check if the generated state is in open or closed. """
         in_open = 0
         in_closed = 0
         ret = [-1, -1]
 
-        for item in self.openList:
-            if item.equals(s):
-                in_open = 1
-                ret[1] = self.openList.index(item)
-                break
+        if item in self.opened:
+            in_open = 1
+            ret[1] = self.opened.index(item)
 
-        for item in self.closeList:
-            if item.equals(s):
-                in_closed = 1
-                ret[1] = self.closeList.index(item)
-                break
+        if item in self.closed:
+            in_closed = 1
+            ret[1] = self.closed.index(item)
 
         if in_open == 0 and in_closed == 0:
             ret[0] = 1  # the child is not in open or closed
@@ -52,7 +48,7 @@ class InformedSearchSolver:
         return ret
 
     """ Checks the inclusivity in the open/closed lists and moves the states accordingly. """
-    def check_conditions(self, child):
+    def check_conditions(self, child: State):
         flag = self.check_inclusive(child)
 
         if flag[0] == 1: # State is in neither list
@@ -66,113 +62,112 @@ class InformedSearchSolver:
                 self.closeList.remove(child)
                 self.openList.append(child)
 
-    """
-     * Four possible directions (up, down, left, and right).
-     * Uses the best first search algorithm. The blank tile is represent by '0'.
-    """
     def next_state(self):
+        """Four possible directions (up, down, left, and right).
+        
+        Uses the best first search algorithm. The blank tile is represent by '0'.
+        """
         # Add closed state
-        self.closeList.append(self.current)
-        self.openList.remove(self.current)
+        self.closed.append(self.current_state)
+        self.opened.remove(self.current_state)
         # Move to the next heuristic state
-        walk_state = self.current.tile_seq
-        row = 0
-        col = 0
+        current_state = self.current_state.tile_seq
 
-        for i in range(len(walk_state)):
-            for j in range(len(walk_state[i])):
-                if walk_state[i, j] == 0:
-                    row = i
-                    col = j
-                    break
+        coordinates = np.argwhere(current_state == 0).flatten()
+        col, row = coordinates[1], coordinates[0]
 
         self.depth += 1
 
         # Move up
         if (row - 1) >= 0:
-            tempState = self.current.move("up")
-            self.check_conditions(tempState)
+            temp_state = self.current_state.move("up")
+            self.check_conditions(temp_state)
 
         # Move down
-        if (row + 1) < len(walk_state):
-            tempState = self.current.move("down")
-            self.check_conditions(tempState)
+        if (row + 1) < len(current_state):
+            temp_state = self.current_state.move("down")
+            self.check_conditions(temp_state)
 
         # Move left
         if (col - 1) >= 0:
-            tempState = self.current.move("left")
-            self.check_conditions(tempState)
+            temp_state = self.current_state.move("left")
+            self.check_conditions(temp_state)
 
         # Move right
-        if (col + 1) < len(walk_state):
-            tempState = self.current.move("right")
-            self.check_conditions(tempState)
+        if (col + 1) < len(current_state):
+            temp_state = self.current_state.move("right")
+            self.check_conditions(temp_state)
 
         # Sort the open list first by h(n) then g(n)
-        self.openList.sort(key=lambda a: a.weight)
-        self.current = self.openList[0]
+        self.opened.sort(key=lambda a: a.weight)
+        self.current_state = self.opened[0]
 
-    """
-     * Solve the game using heuristic search strategies
-     
-     * There are three types of heuristic rules:
-     * (1) Tiles out of place
-     * (2) Sum of distances out of place
-     * (3) 2 x the number of direct tile reversals
-     
-     * evaluation function
-     * f(n) = g(n) + h(n)
-     * g(n) = depth of path length to start state
-     * h(n) = (1) + (2) + (3)
-    """
-    def heuristic_test(self, current):
-        curr_seq = current.tile_seq
-        goal_seq = self.goal.tile_seq
+    def heuristic_test(self):
+        """Solve the game using heuristic search strategies
+        
+        * There are three types of heuristic rules:
+        * (1) Tiles out of place
+        * (2) Sum of distances out of place
+        * (3) 2 x the number of direct tile reversals
+        
+        * evaluation function
+        * f(n) = g(n) + h(n)
+        * g(n) = depth of path length to start state
+        * h(n) = (1) + (2) + (3)
+        """
+        curr_seq = self.current_state.tile_seq
+        goal_seq = self.target_state.tile_seq
 
         # (1) Tiles out of place
-        h1 = 0
-        for r in range(len(curr_seq)):
-            for c in range(len(curr_seq[r])):
-                if curr_seq[r][c] != goal_seq[r][c]:
-                    h1 += 1
+
+        h1 = np.sum(curr_seq != goal_seq)
 
         # (2) Sum of distances out of place
         h2 = 0
-        for curr_row in range(len(curr_seq)):
-            for curr_col in range(len(curr_seq[curr_row])):
-                for goal_row in range(len(goal_seq)):
-                    for goal_col in range(len(goal_seq[goal_row])):
-                        if curr_seq[curr_row][curr_col] == goal_seq[goal_row][goal_col]:
-                            h2 += abs(curr_row-goal_row) + abs(curr_col-goal_col)
+        for current_x, current_y in np.ndindex(curr_seq.shape):
+            for goal_x, goal_y in np.ndindex(goal_seq.shape):
+                if curr_seq[current_y][current_x] == goal_seq[goal_y][goal_x]:
+                    h2 += abs(current_y - goal_y) + abs(current_x - goal_x)
 
         # (3) Twice the number of direct tile reversals
         h3 = 0
-        for row in range(len(goal_seq)-1):
-            for col in range(len(goal_seq[row])-1):
-                if goal_seq[row][col] == curr_seq[row+1][col] and goal_seq[row+1][col] == curr_seq[row][col] and \
-                        curr_seq[row][col] != 0 and curr_seq[row+1][col] != 0:
-                    h3 += 1
-                elif goal_seq[row][col] == curr_seq[row][col+1] and goal_seq[row][col+1] == curr_seq[row][col] and \
-                        curr_seq[row][col] != 0 and curr_seq[row][col+1] != 0:
-                    h3 += 1
+
+        for row, col in np.ndindex(tuple(np.subtract(curr_seq.shape, (1, 1)))):
+            if (
+                goal_seq[row][col] == curr_seq[row + 1][col]
+                and goal_seq[row + 1][col] == curr_seq[row][col]
+                and curr_seq[row][col] != 0
+                and curr_seq[row + 1][col] != 0
+            ):
+                h3 += 1
+            elif (
+                goal_seq[row][col] == curr_seq[row][col + 1]
+                and goal_seq[row][col + 1] == curr_seq[row][col]
+                and curr_seq[row][col] != 0
+                and curr_seq[row][col + 1] != 0
+            ):
+                h3 += 1
         h3 *= 2
 
         # Set the heuristic value for current state
-        current.weight = current.depth + h1 + h2 + h3
+        self.current_state.weight = self.current_state.depth + h1 + h2 + h3
+
+    def misplaced_tiles(self) -> int:
+        return np.sum(self.current_state != self.target_state)
 
     # You can choose to print all the states on the search path, or just the start and goal state
     def run(self):
         print("Start State:")
-        print(self.current.tile_seq)
+        print(self.current_state.tile_seq)
 
         path = 0
 
-        while not self.current.equals(self.goal):
+        while not self.current_state == self.target_state:
             self.next_state()
-            print(self.current.tile_seq)
+            # print(self.current_state.tile_seq)
             path += 1
 
         print("It took ", path, " iterations")
-        print("The length of the path is: ", self.current.depth)
+        print("The length of the path is: ", self.current_state.depth)
         print("Goal State:")
-        print(self.goal.tile_seq)
+        print(self.target_state.tile_seq)
