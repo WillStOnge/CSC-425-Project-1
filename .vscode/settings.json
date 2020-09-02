@@ -1,5 +1,5 @@
 {
-    "python.linting.pylintEnabled": false,
+    "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "python.linting.flake8Enabled": false,
     "python.testing.unittestArgs": [
@@ -11,6 +11,6 @@
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.nosetestsEnabled": false,
-    "python.testing.unittestEnabled": false,
-    "python.testing.promptToConfigure": false
+    "python.testing.unittestEnabled": true,
+    "python.linting.banditEnabled": false
 }

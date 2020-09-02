@@ -29,8 +29,8 @@ def main():
     uninformed_solver = UninformedSearchSolver(init, goal)
     uninformed_solver.run()
 
-    # informed_solver = InformedSearchSolver(init, goal)
-    # informed_solver.run()
+    informed_solver = InformedSearchSolver(init, goal)
+    informed_solver.run()
 
 
 if __name__ == "__main__":
