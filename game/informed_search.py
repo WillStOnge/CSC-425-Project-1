@@ -25,9 +25,6 @@ class InformedSearchSolver:
         self.goal = goal
         self.openList.append(current)
 
-    def sortFun(self, e):
-        return e.weight
-
     """ Check if the generated state is in open or closed. """
     def check_inclusive(self, s):
         in_open = 0
@@ -55,19 +52,19 @@ class InformedSearchSolver:
         return ret
 
     """ Checks the inclusivity in the open/closed lists and moves the states accordingly. """
-    def check_conditions(self, state):
-        flag = self.check_inclusive(state)
+    def check_conditions(self, child):
+        flag = self.check_inclusive(child)
 
         if flag[0] == 1: # State is in neither list
-            self.heuristic_test(state)
-            openList.append(state)
+            self.heuristic_test(child)
+            self.openList.append(child)
         elif flag[0] == 2: # State is in the open list
-            if state.depth < self.current.depth:
+            if child.depth < self.current.depth:
                 test = None # Give the state on open the shorter path
         else: # State is in the closed list
-            if state.depth < self.current.depth:
-                closeList.remove(state)
-                openList.append(state)
+            if child.depth < self.current.depth:
+                self.closeList.remove(child)
+                self.openList.append(child)
 
     """
      * Four possible directions (up, down, left, and right).
@@ -112,7 +109,7 @@ class InformedSearchSolver:
             self.check_conditions(tempState)
 
         # Sort the open list first by h(n) then g(n)
-        self.openList.sort(key=self.sortFun)
+        self.openList.sort(key=lambda a: a.weight)
         self.current = self.openList[0]
 
     """
