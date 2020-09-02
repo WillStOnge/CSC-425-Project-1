@@ -36,7 +36,7 @@ class State:
             IndexError: If the move is unsupported
         """
 
-        new_state = State(deepcopy(self.tile_seq), self.depth, self.weight)
+        new_state = State(deepcopy(self.tile_seq), self.depth + 1, self.weight)
 
         coordinates = np.argwhere(new_state.tile_seq == 0).flatten()
         current_x, current_y = coordinates[1], coordinates[0]
