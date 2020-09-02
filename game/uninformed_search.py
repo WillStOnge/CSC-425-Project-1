@@ -61,7 +61,7 @@ class UninformedSearchSolver:
         while not self.current_state == self.target_state:
             self.next_state()
             print(f"State: {path+1}")
-            print(self.current_state.tile_seq)
+            # print(self.current_state.tile_seq)
             print("--------")
             path += 1
 
