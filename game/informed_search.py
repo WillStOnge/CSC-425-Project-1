@@ -23,7 +23,6 @@ class InformedSearchSolver:
     def __init__(self, current: State, target: State):
         self.current_state = current
         self.target_state = target
-
         self.opened.append(current)
 
     def check_inclusive(self, item: State):
@@ -48,23 +47,20 @@ class InformedSearchSolver:
             ret[0] = 3  # the child is already in closed
         return ret
 
-    def check_conditions(self, state: State):
-        """ Checks the inclusivity in the open/closed lists and moves the states accordingly.
-        Args:
-            `state` - State object
-        """
-        flag = self.check_inclusive(state)
+    """ Checks the inclusivity in the open/closed lists and moves the states accordingly. """
+    def check_conditions(self, child: State):
+        flag = self.check_inclusive(child)
 
-        if flag[0] == 1:  # State is in neither list
-            self.heuristic_test()
-            self.opened.append(state)
-        elif flag[0] == 2:  # State is in the open list
-            if state.depth < self.current_state.depth:
-                test = None  # Give the state on open the shorter path
-        else:  # State is in the closed list
-            if state.depth < self.current_state.depth:
-                self.closed.remove(state)
-                self.opened.append(state)
+        if flag[0] == 1: # State is in neither list
+            self.heuristic_test(child)
+            self.openList.append(child)
+        elif flag[0] == 2: # State is in the open list
+            if child.depth < self.current.depth:
+                test = None # Give the state on open the shorter path
+        else: # State is in the closed list
+            if child.depth < self.current.depth:
+                self.closeList.remove(child)
+                self.openList.append(child)
 
     def next_state(self):
         """Four possible directions (up, down, left, and right).
