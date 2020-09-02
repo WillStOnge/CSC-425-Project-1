@@ -47,8 +47,11 @@ class InformedSearchSolver:
             ret[0] = 3  # the child is already in closed
         return ret
 
-    """ Checks the inclusivity in the open/closed lists and moves the states accordingly. """
     def check_conditions(self, child: State):
+        """ Checks the inclusivity in the open/closed lists and moves the states accordingly.
+        Args:
+            `state` - State object
+        """
         flag = self.check_inclusive(child)
 
         if flag[0] == 1: # State is in neither list
