@@ -158,7 +158,6 @@ class InformedSearchSolver:
         current_tiles = self.current_state.tile_seq
         for row in range(len(current_tiles)):
             for col in range(len(current_tiles[row])):
-                print(f"{row}, {col}")
                 if row != 2:
                     if self.current_state[row][col] == self.target_state[row + 1][col]:
                         reversals += 1

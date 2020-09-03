@@ -38,9 +38,9 @@ class UninformedSearchSolver:
         observed_state: State = self.opened.popleft()
         if not self.is_solvable():
             print("UNSOLVABLE")
-            return
+            exit(1)
 
-        if np.all(observed_state == self.target_state):
+        if np.all(observed_state.tile_seq == self.target_state.tile_seq):
             self.current_state = observed_state
             return
 
@@ -56,11 +56,11 @@ class UninformedSearchSolver:
         # output the start state
         print(f"Initial State: \n{self.current_state.tile_seq}")
         print("---------")
-        path = 0
+        path = 1
 
         while not self.current_state == self.target_state:
             self.next_state()
-            print(f"State: {path+1}")
+            print(f"State: {path}")
             # print(self.current_state.tile_seq)
             print("--------")
             path += 1

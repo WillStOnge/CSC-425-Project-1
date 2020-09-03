@@ -19,4 +19,5 @@ class TestUninformedSolver(unittest.TestCase):
             uninformed_solver.next_state()
             # print(succ)
         self.assertTrue(
-            np.all(goal.tile_seq == uninformed_solver.current_state.tile_seq))
+            np.all(goal.tile_seq == uninformed_solver.current_state.tile_seq)
+        )
