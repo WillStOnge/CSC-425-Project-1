@@ -119,45 +119,54 @@ class InformedSearchSolver:
         * g(n) = depth of path length to start state
         * h(n) = (1) + (2) + (3)
         """
-        curr_seq = self.current_state.tile_seq
-        goal_seq = self.target_state.tile_seq
-
-        # (1) Tiles out of place
-
-        h1 = np.sum(curr_seq != goal_seq)
-
-        # (2) Sum of distances out of place
-        h2 = 0
-        for current_x, current_y in np.ndindex(curr_seq.shape):
-            for goal_x, goal_y in np.ndindex(goal_seq.shape):
-                if curr_seq[current_y][current_x] == goal_seq[goal_y][goal_x]:
-                    h2 += abs(current_y - goal_y) + abs(current_x - goal_x)
-
-        # (3) Twice the number of direct tile reversals
-        h3 = 0
-
-        for row, col in np.ndindex(tuple(np.subtract(curr_seq.shape, (1, 1)))):
-            if (
-                goal_seq[row][col] == curr_seq[row + 1][col]
-                and goal_seq[row + 1][col] == curr_seq[row][col]
-                and curr_seq[row][col] != 0
-                and curr_seq[row + 1][col] != 0
-            ):
-                h3 += 1
-            elif (
-                goal_seq[row][col] == curr_seq[row][col + 1]
-                and goal_seq[row][col + 1] == curr_seq[row][col]
-                and curr_seq[row][col] != 0
-                and curr_seq[row][col + 1] != 0
-            ):
-                h3 += 1
-        h3 *= 2
+        h1 = self.misplaced_tiles()
+        h2 = self.misplaced_distances()
+        h3 = 2 * self.tile_reversals()
 
         # Set the heuristic value for current state
         self.current_state.weight = self.current_state.depth + h1 + h2 + h3
 
     def misplaced_tiles(self) -> int:
-        return np.sum(self.current_state != self.target_state)
+        """Counts all misplaced tiles
+
+        Returns:
+            int: misplaced tile count
+        """
+        return np.sum(self.current_state.tile_seq != self.target_state.tile_seq)
+
+    def misplaced_distances(self) -> int:
+        distance = 0
+        current_tiles = self.current_state.tile_seq
+        target_tiles = self.target_state.tile_seq
+        for current_x, current_y in np.ndindex(current_tiles.shape):
+            for goal_x, goal_y in np.ndindex(target_tiles.shape):
+                if (
+                    self.current_state[current_y][current_x]
+                    == self.target_state[goal_y][goal_x]
+                ):
+                    distance += abs(current_y - goal_y) + abs(current_x - goal_x)
+        return distance
+
+    def tile_reversals(self) -> int:
+        """Counts tiles that are reversed to each other
+
+        Returns:
+            int: reversed tiles
+        """
+        reversals = 0
+
+        current_tiles = self.current_state.tile_seq
+        for row in range(len(current_tiles)):
+            for col in range(len(current_tiles[row])):
+                print(f"{row}, {col}")
+                if row != 2:
+                    if self.current_state[row][col] == self.target_state[row + 1][col]:
+                        reversals += 1
+                if col != 2:
+                    if self.current_state[row][col] == self.target_state[row][col + 1]:
+                        reversals += 1
+
+        return reversals
 
     # You can choose to print all the states on the search path, or just the start and goal state
     def run(self):

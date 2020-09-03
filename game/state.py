@@ -122,6 +122,9 @@ class State:
 
         return neighbors
 
+    def __getitem__(self, index: int) -> List[int]:
+        return self.tile_seq[index]
+
     def __eq__(self, obj: "State") -> bool:
         if not isinstance(obj, self.__class__):
             return False
