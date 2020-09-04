@@ -101,7 +101,7 @@ class State:
         neighbors = list()
 
         try:
-            neighbors.append(self.move("up"))
+            neighbors.append(self.move("right"))
         except IndexError:
             pass
 
@@ -111,16 +111,19 @@ class State:
             pass
 
         try:
-            neighbors.append(self.move("down"))
+            neighbors.append(self.move("up"))
         except IndexError:
             pass
 
         try:
-            neighbors.append(self.move("right"))
+            neighbors.append(self.move("down"))
         except IndexError:
             pass
 
         return neighbors
+
+    def __getitem__(self, index: int) -> List[int]:
+        return self.tile_seq[index]
 
     def __eq__(self, obj: "State") -> bool:
         if not isinstance(obj, self.__class__):
@@ -132,10 +135,10 @@ class State:
         return not self == obj
 
     def __hash__(self) -> str:
-        return hash((self.depth, self.weight, self.tile_seq.tobytes()))
+        return hash((np.array2string(self.tile_seq)))
 
     def __str__(self):
-        return self.tile_seq.tostring()
+        return np.array2string(self.tile_seq)
 
     def __repr__(self):
         return self.tile_seq.__repr__()
