@@ -74,6 +74,10 @@ class InformedSearchSolver:
     def next_state(self):
         """ Uses the best first search algorithm. The blank tile is represent by '0'. """
         # Move state to closed.
+        if not self.current_state.is_solvable():
+            print("UNSOLVABLE")
+            exit(1)
+
         self.closed.append(self.current_state)
         self.opened.remove(self.current_state)
 
@@ -172,7 +176,6 @@ class InformedSearchSolver:
 
         while not self.is_solved():
             self.next_state()
-            print(path)
             path += 1
 
         print("It took ", path, " iterations")
