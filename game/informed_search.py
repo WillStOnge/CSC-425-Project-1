@@ -1,5 +1,6 @@
 import numpy as np
 from .state import State
+import sys
 
 """
 This class implement the Best-First-Search (BFS) algorithm along with the Heuristic search strategies
@@ -75,9 +76,8 @@ class InformedSearchSolver:
         """ Uses the best first search algorithm. The blank tile is represent by '0'. """
         # Move state to closed.
         if not self.current_state.is_solvable():
-            print("UNSOLVABLE")
-            exit(1)
-
+            raise Exception('Unsolvable')
+        
         self.closed.append(self.current_state)
         self.opened.remove(self.current_state)
 
@@ -168,17 +168,10 @@ class InformedSearchSolver:
         return self.current_state == self.target_state
 
     # You can choose to print all the states on the search path, or just the start and goal state
-    def run(self):
-        print("Start State:")
-        print(self.current_state.tile_seq)
-        print("\n---------")
+    def run(self) -> int:
         path = 0
 
         while not self.is_solved():
             self.next_state()
             path += 1
-
-        print("It took ", path, " iterations")
-        print("The length of the path is: ", self.current_state.depth)
-        print("Goal State:")
-        print(self.target_state.tile_seq)
+        return path

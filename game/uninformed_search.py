@@ -2,6 +2,7 @@ from .state import State
 from collections import deque
 import numpy as np
 import ipdb
+import sys
 
 
 class UninformedSearchSolver:
@@ -24,8 +25,7 @@ class UninformedSearchSolver:
 
         """
         if not self.current_state.is_solvable():
-            print("UNSOLVABLE")
-            exit(1)
+            raise Exception('Unsolvable')
 
         observed_state: State = self.opened.popleft()
 
@@ -42,20 +42,12 @@ class UninformedSearchSolver:
     def is_solved(self) -> bool:
         return self.current_state == self.target_state
 
-    def run(self):
+    def run(self) -> int:
         """Runs the search"""
-        print(f"Initial State: \n{self.current_state.tile_seq}")
-        print("---------")
         path = 0
 
         while not self.is_solved():
             self.next_state()
             path += 1
 
-        print(self.current_state.tile_seq)
-
-        print("It took ", path, " iterations")
-        print("The length of the path is: ", self.current_state.depth)
-        # output the goal state
-        print(self.target_state.tile_seq)
-        print("goal state !!!!!")
+        return path
