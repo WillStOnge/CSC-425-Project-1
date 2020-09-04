@@ -27,7 +27,7 @@ class TestInformedSolver(unittest.TestCase):
         goal = State(goal_tile, 0, 0)
 
         informed_solver = InformedSearchSolver(init, goal)
-        tile = informed_solver.misplaced_tiles()
+        tile = informed_solver.misplaced_tiles(init)
 
         self.assertEqual(tile, 4)
 
@@ -40,7 +40,7 @@ class TestInformedSolver(unittest.TestCase):
         goal = State(goal_tile, 0, 0)
 
         informed_solver = InformedSearchSolver(init, goal)
-        tile = informed_solver.tile_reversals()
+        tile = informed_solver.tile_reversals(init)
 
         self.assertEqual(tile, 1)
 
@@ -52,7 +52,7 @@ class TestInformedSolver(unittest.TestCase):
         goal = State(goal_tile, 0, 0)
 
         informed_solver = InformedSearchSolver(init, goal)
-        tile = informed_solver.tile_reversals()
+        tile = informed_solver.tile_reversals(init)
 
         self.assertEqual(tile, 1)
 
@@ -64,6 +64,6 @@ class TestInformedSolver(unittest.TestCase):
         goal = State(goal_tile, 0, 0)
 
         informed_solver = InformedSearchSolver(init, goal)
-        tile = informed_solver.tile_reversals()
+        tile = informed_solver.tile_reversals(init)
 
         self.assertEqual(tile, 2)
