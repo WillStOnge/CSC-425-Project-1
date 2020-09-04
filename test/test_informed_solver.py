@@ -5,7 +5,7 @@ import numpy as np
 
 
 class TestInformedSolver(unittest.TestCase):
-    def test_state_walk(self):
+    def test_next_state(self):
         init_tile = np.array([[1, 2, 3], [0, 4, 6], [7, 5, 8]])
         goal_tile = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 0]])
 
@@ -13,11 +13,12 @@ class TestInformedSolver(unittest.TestCase):
         goal = State(goal_tile, 0, 0)
 
         informed_solver = InformedSearchSolver(init, goal)
-
-        while not informed_solver.current_state == informed_solver.target_state:
+        path = 0
+        while not informed_solver.is_solved():
             informed_solver.next_state()
+            path += 1
 
-        self.assertTrue(np.all(goal.tile_seq == informed_solver.current_state.tile_seq))
+        self.assertEqual(path, 4)
 
     def test_misplaced_tiles(self):
         init_tile = np.array([[1, 2, 3], [0, 4, 6], [7, 5, 8]])

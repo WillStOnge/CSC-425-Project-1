@@ -76,11 +76,13 @@ class TestState(unittest.TestCase):
         self.assertTrue(
             np.all(
                 np.array([x.tile_seq for x in neighbors])
-                == np.array([
-                    up_state.tile_seq,
-                    left_state.tile_seq,
-                    down_state.tile_seq,
-                    right_state.tile_seq,
-                ])
+                == np.array(
+                    [
+                        right_state.tile_seq,
+                        left_state.tile_seq,
+                        up_state.tile_seq,
+                        down_state.tile_seq,
+                    ]
+                )
             )
         )
