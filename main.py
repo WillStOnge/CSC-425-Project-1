@@ -16,19 +16,19 @@ from game.informed_search import InformedSearchSolver
 
 def main():
     # initialize the init state and goal state as 2d array
-    # init_tile = np.array([[2, 3, 6], [1, 4, 8], [7, 5, 0]])
     init_tile = np.array([[1, 2, 3], [0, 4, 6], [7, 5, 8]])
-    # init_tile = np.array([[1, 3, 4], [8, 6, 2], [7, 0, 5]])
     goal_tile = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 0]])
+
     # 123046758
+
     init = State(init_tile, 0, 0)
     goal = State(goal_tile, 0, 0)
 
-    uninformed_solver = UninformedSearchSolver(init, goal)
-    uninformed_solver.run()
+    # uninformed_solver = UninformedSearchSolver(init, goal)
+    # uninformed_solver.run()
 
-    # informed_solver = InformedSearchSolver(init, goal)
-    # informed_solver.run()
+    informed_solver = InformedSearchSolver(init, goal)
+    informed_solver.run()
 
 
 if __name__ == "__main__":

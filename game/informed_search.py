@@ -64,7 +64,7 @@ class InformedSearchSolver:
         elif flag[0] == 2:
             if child.depth < self.current_state.depth:
                 self.opened[flag[1]].depth = child.depth
-                
+
         # State is in the closed list.
         else:
             if child.depth < self.current_state.depth:
@@ -136,10 +136,7 @@ class InformedSearchSolver:
         target_tiles = self.target_state.tile_seq
         for current_x, current_y in np.ndindex(current_tiles.shape):
             for goal_x, goal_y in np.ndindex(target_tiles.shape):
-                if (
-                    state[current_y][current_x]
-                    == self.target_state[goal_y][goal_x]
-                ):
+                if state[current_y][current_x] == self.target_state[goal_y][goal_x]:
                     distance += abs(current_y - goal_y) + abs(current_x - goal_x)
         return distance
 
@@ -163,16 +160,19 @@ class InformedSearchSolver:
 
         return reversals
 
+    def is_solved(self) -> bool:
+        return self.current_state == self.target_state
+
     # You can choose to print all the states on the search path, or just the start and goal state
     def run(self):
         print("Start State:")
         print(self.current_state.tile_seq)
-
+        print("\n---------")
         path = 0
 
-        while not self.current_state == self.target_state:
+        while not self.is_solved():
             self.next_state()
-            print(self.current_state.tile_seq)
+            print(path)
             path += 1
 
         print("It took ", path, " iterations")
