@@ -137,3 +137,12 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 .idea/
+
+game/__pycache__/__init__.cpython-38.pyc
+game/__pycache__/informed_search.cpython-38.pyc
+game/__pycache__/state.cpython-38.pyc
+game/__pycache__/uninformed_search.cpython-38.pyc
+test/__pycache__/__init__.cpython-38.pyc
+test/__pycache__/test_informed_solver.cpython-38.pyc
+test/__pycache__/test_state.cpython-38.pyc
+test/__pycache__/test_uninformed_solver.cpython-38.pyc
