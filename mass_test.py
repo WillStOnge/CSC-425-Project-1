@@ -4,6 +4,7 @@ from game.state import State
 import numpy as np
 import sys
 
+
 def mass_test(iterations: int):
     for i in range(iterations):
         arr = np.arange(9).reshape((3, 3))
@@ -25,15 +26,16 @@ def mass_test(iterations: int):
             uninformed_path = uninformed_solver.run()
 
             if informed_path > uninformed_path:
-                print('Iteration', i, '- Informed path was longer than the uninformed')
+                print("Iteration", i, "- Informed path was longer than the uninformed")
                 print(init_state.tile_seq)
-                print('----------')
+                print("----------")
                 print(goal_state.tile_seq)
         except Exception:
             continue
 
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print('Usage: python mass_test.py testCount')
+        print("Usage: python mass_test.py testCount")
         exit(1)
     mass_test(int(sys.argv[1]))

@@ -6,14 +6,19 @@ import sys
 
 
 class UninformedSearchSolver:
-    """Implements BFS to find a solution to an 8-puzzle problem
-    """
+    """Implements BFS to find a solution to an 8-puzzle problem"""
 
     opened = deque()
     closed = set()
     depth = 0
 
     def __init__(self, current: State, target: State):
+        """Creates State object.
+
+        Args:
+            current (State): Initial State
+            target (State): Target State
+        """
         self.current_state = current
         self.target_state = target
         self.opened.append(current)
@@ -25,7 +30,7 @@ class UninformedSearchSolver:
 
         """
         if not self.current_state.is_solvable():
-            raise Exception('Unsolvable')
+            raise RuntimeError("Unsolvable")
 
         observed_state: State = self.opened.popleft()
 
@@ -40,14 +45,19 @@ class UninformedSearchSolver:
                 self.opened.append(neighbor)
 
     def is_solved(self) -> bool:
+        """Checks if the search has found a solution
+
+        Returns:
+            bool: is puzzle solved
+        """
         return self.current_state == self.target_state
 
     def run(self) -> int:
         """Runs the search"""
-        path = 0
+        iterations = 0
 
         while not self.is_solved():
             self.next_state()
-            path += 1
+            iterations += 1
 
-        return path
+        return iterations
