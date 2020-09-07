@@ -52,12 +52,15 @@ class UninformedSearchSolver:
         """
         return self.current_state == self.target_state
 
-    def run(self) -> int:
+    def run(self, max_depth: int) -> int:
         """Runs the search"""
         iterations = 0
 
         while not self.is_solved():
             self.next_state()
             iterations += 1
+
+            if iterations >= max_depth:
+                break
 
         return iterations

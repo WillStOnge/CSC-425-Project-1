@@ -22,16 +22,16 @@ def mass_test(iterations: int):
         uninformed_path: int
 
         try:
-            informed_path = informed_solver.run()
-            uninformed_path = uninformed_solver.run()
+            informed_path, _ = informed_solver.run(1000)
+            uninformed_path = uninformed_solver.run(1000)
 
             if informed_path > uninformed_path:
                 print("Iteration", i, "- Informed path was longer than the uninformed")
                 print(init_state.tile_seq)
                 print("----------")
                 print(goal_state.tile_seq)
-        except Exception:
-            continue
+        except RuntimeError:
+            pass
 
 
 if __name__ == "__main__":

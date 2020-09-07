@@ -2,7 +2,7 @@ import numpy as np
 from .state import State
 import sys
 import enum
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 """
 This class implement the Best-First-Search (BFS) algorithm along with the Heuristic search strategies
@@ -25,13 +25,7 @@ class GeneratedStateType(enum.Enum):
 
 
 class InformedSearchSolver:
-    """[summary]
-
-    Raises:
-        Exception: [description]
-
-    Returns:
-        [type]: [description]
+    """Implements Best First Search
     """
 
     opened: List[State] = []
@@ -48,7 +42,7 @@ class InformedSearchSolver:
         is_in_closed = item in self.closed
         is_in_open = item in self.opened
 
-        index = None
+        index = -1
         state_type = GeneratedStateType.NEITHER
 
         if is_in_closed:
@@ -188,10 +182,13 @@ class InformedSearchSolver:
         return self.current_state == self.target_state
 
     # You can choose to print all the states on the search path, or just the start and goal state
-    def run(self) -> Tuple[int, int]:
-        path = 0
+    def run(self, max_iterations: int) -> Tuple[int, int]:
+        iterations = 0
         while not self.is_solved():
             self.next_state()
-            path += 1
+            iterations += 1
 
-        return path, self.depth
+            if iterations >= max_iterations:
+                break
+
+        return iterations, self.depth

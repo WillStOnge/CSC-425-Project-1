@@ -17,13 +17,14 @@ class State:
         """
         inv_count = 0
         arr = self.flatten()
-        for i in range(0, 9):
+        for i in range(8):
             for j in range(i + 1, 9):
-                if arr[j] and arr[i] and arr[i] > arr[j]:
+                if arr[j] != 0 and arr[i] and arr[i] > arr[j]:
                     inv_count += 1
+
         return inv_count % 2 == 0
 
-    def flatten(self) -> np.ndarray[np.float64]:
+    def flatten(self) -> "np.ndarray[np.float64]":
         """Flattens the nested array structure into a one dimensional array
 
         Returns:
