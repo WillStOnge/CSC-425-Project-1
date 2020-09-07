@@ -23,7 +23,7 @@ class State:
                     inv_count += 1
         return inv_count % 2 == 0
 
-    def flatten(self) -> List[int]:
+    def flatten(self) -> np.ndarray[np.float64]:
         """Flattens the nested array structure into a one dimensional array
 
         Returns:
@@ -139,16 +139,16 @@ class State:
     def __getitem__(self, index: int) -> List[int]:
         return self.tile_seq[index]
 
-    def __eq__(self, obj: "State") -> bool:
+    def __eq__(self, obj: object) -> bool:
         if not isinstance(obj, self.__class__):
             return False
 
-        return np.all(self.tile_seq == obj.tile_seq)
+        return bool(np.all(self.tile_seq == obj.tile_seq))
 
-    def __ne__(self, obj: "State") -> bool:
+    def __ne__(self, obj: object) -> bool:
         return not self == obj
 
-    def __hash__(self) -> str:
+    def __hash__(self) -> int:
         return hash((np.array2string(self.tile_seq)))
 
     def __str__(self):

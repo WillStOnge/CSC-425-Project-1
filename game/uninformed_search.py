@@ -1,15 +1,15 @@
 from .state import State
 from collections import deque
 import numpy as np
-import ipdb
 import sys
+from typing import Set
 
 
 class UninformedSearchSolver:
     """Implements BFS to find a solution to an 8-puzzle problem"""
 
-    opened = deque()
-    closed = set()
+    opened: deque = deque()
+    closed: Set[State] = set()
     depth = 0
 
     def __init__(self, current: State, target: State):

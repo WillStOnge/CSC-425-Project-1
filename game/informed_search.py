@@ -2,6 +2,7 @@ import numpy as np
 from .state import State
 import sys
 import enum
+from typing import List, Tuple
 
 """
 This class implement the Best-First-Search (BFS) algorithm along with the Heuristic search strategies
@@ -33,8 +34,8 @@ class InformedSearchSolver:
         [type]: [description]
     """
 
-    opened = []
-    closed = []
+    opened: List[State] = []
+    closed: List[State] = []
     depth = 0
 
     def __init__(self, current: State, target: State):
@@ -42,7 +43,7 @@ class InformedSearchSolver:
         self.target_state = target
         self.opened.append(current)
 
-    def check_inclusive(self, item: State) -> (GeneratedStateType, int):
+    def check_inclusive(self, item: State) -> Tuple[GeneratedStateType, int]:
         """ Check if the generated state is in open and/or closed. """
         is_in_closed = item in self.closed
         is_in_open = item in self.opened
@@ -118,7 +119,7 @@ class InformedSearchSolver:
         self.opened.sort(key=lambda a: a.weight)
         self.current_state = self.opened[0]
 
-    def heuristic_score(self, state: State):
+    def heuristic_score(self, state: State) -> int:
         """Sets the weight to the heuristic value
         
         Solve the game using heuristic search strategies
@@ -187,7 +188,7 @@ class InformedSearchSolver:
         return self.current_state == self.target_state
 
     # You can choose to print all the states on the search path, or just the start and goal state
-    def run(self) -> int:
+    def run(self) -> Tuple[int, int]:
         path = 0
         while not self.is_solved():
             self.next_state()
