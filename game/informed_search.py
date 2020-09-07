@@ -72,7 +72,7 @@ class InformedSearchSolver:
         state_type, index = self.check_inclusive(child)
 
         if state_type is GeneratedStateType.NEITHER:
-            self.heuristic_test(child)
+            child.weight = self.heuristic_score(child)
             self.opened.append(child)
 
         elif state_type is GeneratedStateType.ON_OPEN:
@@ -118,7 +118,7 @@ class InformedSearchSolver:
         self.opened.sort(key=lambda a: a.weight)
         self.current_state = self.opened[0]
 
-    def heuristic_test(self, state: State):
+    def heuristic_score(self, state: State):
         """Sets the weight to the heuristic value
         
         Solve the game using heuristic search strategies
@@ -138,7 +138,7 @@ class InformedSearchSolver:
         h3 = 2 * self.tile_reversals(state)
 
         # Set the heuristic value for current state
-        state.weight = state.depth + h1 + h2 + h3
+        return state.depth + h1 + h2 + h3
 
     def misplaced_tiles(self, state: State) -> int:
         """Counts all misplaced tiles
