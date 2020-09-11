@@ -62,5 +62,9 @@ class UninformedSearchSolver:
 
             if iterations >= max_depth:
                 break
-
+               
+        print("It took ", iterations, " iterations")
+        print("The length of the path is: ", self.current_state.depth)
+        print("Goal State:")
+        print(self.target_state.tile_seq)
         return iterations
