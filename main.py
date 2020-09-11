@@ -29,12 +29,12 @@ def main():
 
     try:
         uninformed_runs = uninformed_solver.run(1000)
-        informed_runs, informed_depth = informed_solver.run(1000)
+        informed_runs = informed_solver.run(1000)
         print(
             f"\nUninformed search took {uninformed_runs} iterations to solve the puzzle"
         )
         print(
-            f"\nInformed search took {informed_runs} iterations and {informed_depth} depth to solve the puzzle"
+            f"\nInformed search took {informed_runs} iterations and {informed_solver.depth} depth to solve the puzzle"
         )
     except RuntimeError:
         print("Puzzle has no solution.")

@@ -20,8 +20,8 @@ def mass_test(iterations: int):
 
         try:
             sys.stdout = open(os.devnull, 'w')
-            informed_path = informed_solver.run()
-            uninformed_path = uninformed_solver.run()
+            informed_path = informed_solver.run(100)
+            uninformed_path = uninformed_solver.run(100)
             sys.stdout = sys.__stdout__
 
             if informed_path > uninformed_path:

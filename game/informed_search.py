@@ -134,7 +134,7 @@ class InformedSearchSolver:
         h4 = self.euclidean_distance(state)
 
         # Set the heuristic value for current state
-        state.weight = state.depth + h1 + h2 + h3 + h4
+        return state.depth + h1 + h2 + h3 + h4
 
     def misplaced_tiles(self, state: State) -> int:
         """Counts all misplaced tiles
