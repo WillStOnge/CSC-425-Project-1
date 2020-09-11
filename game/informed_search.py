@@ -1,5 +1,6 @@
 import numpy as np
 from .state import State
+from math import sqrt, floor
 
 """
 This class implement the Best-First-Search (BFS) algorithm along with the Heuristic search strategies
@@ -122,9 +123,10 @@ class InformedSearchSolver:
         h1 = self.misplaced_tiles(state)
         h2 = self.misplaced_distances(state)
         h3 = 2 * self.tile_reversals(state)
+        h4 = self.euclidean_distance(state)
 
         # Set the heuristic value for current state
-        state.weight = state.depth + h1 + h2 + h3
+        state.weight = state.depth + h1 + h2 + h3 + h4
 
     def misplaced_tiles(self, state: State) -> int:
         """Counts all misplaced tiles
@@ -135,6 +137,11 @@ class InformedSearchSolver:
         return np.sum(state.tile_seq != self.target_state.tile_seq)
 
     def misplaced_distances(self, state: State) -> int:
+        """ Calculates Manhattan distance 
+        
+        Returns:
+            int: misplaced distances
+        """
         distance = 0
         current_tiles = state.tile_seq
         target_tiles = self.target_state.tile_seq
@@ -163,6 +170,21 @@ class InformedSearchSolver:
                         reversals += 1
 
         return reversals
+
+    def euclidean_distance(self, state: State) -> int:
+        """ Calculates Euclidean distance 
+        
+        Returns:
+            int: misplaced distances
+        """
+        distance = 0
+        current_tiles = state.tile_seq
+        target_tiles = self.target_state.tile_seq
+        for current_x, current_y in np.ndindex(current_tiles.shape):
+            for goal_x, goal_y in np.ndindex(target_tiles.shape):
+                if state[current_y][current_x] == self.target_state[goal_y][goal_x]:
+                    distance += sqrt(pow(current_y - goal_y, 2) + pow(current_x - goal_x, 2))
+        return floor(distance)
 
     def is_solved(self) -> bool:
         return self.current_state == self.target_state
