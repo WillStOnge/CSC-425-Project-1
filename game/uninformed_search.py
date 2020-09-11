@@ -56,7 +56,6 @@ class UninformedSearchSolver:
 
         print("It took ", path, " iterations")
         print("The length of the path is: ", self.current_state.depth)
-        # output the goal state
+        print("Goal State:")
         print(self.target_state.tile_seq)
-        print("goal state !!!!!")
         return path

@@ -169,9 +169,9 @@ class InformedSearchSolver:
 
     # You can choose to print all the states on the search path, or just the start and goal state
     def run(self) -> int:
-        print("Start State:")
-        print(self.current_state.tile_seq)
-        print("\n---------")
+        """Runs the search"""
+        print(f"Initial State: \n{self.current_state.tile_seq}")
+        print("---------")
         path = 0
 
         while not self.is_solved():
