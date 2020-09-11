@@ -42,7 +42,7 @@ class UninformedSearchSolver:
     def is_solved(self) -> bool:
         return self.current_state == self.target_state
 
-    def run(self):
+    def run(self) -> int:
         """Runs the search"""
         print(f"Initial State: \n{self.current_state.tile_seq}")
         print("---------")
@@ -59,3 +59,4 @@ class UninformedSearchSolver:
         # output the goal state
         print(self.target_state.tile_seq)
         print("goal state !!!!!")
+        return path

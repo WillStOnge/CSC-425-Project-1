@@ -168,7 +168,7 @@ class InformedSearchSolver:
         return self.current_state == self.target_state
 
     # You can choose to print all the states on the search path, or just the start and goal state
-    def run(self):
+    def run(self) -> int:
         print("Start State:")
         print(self.current_state.tile_seq)
         print("\n---------")
@@ -182,3 +182,4 @@ class InformedSearchSolver:
         print("The length of the path is: ", self.current_state.depth)
         print("Goal State:")
         print(self.target_state.tile_seq)
+        return path
