@@ -24,11 +24,20 @@ def main():
     init = State(init_tile, 0, 0)
     goal = State(goal_tile, 0, 0)
 
-    # uninformed_solver = UninformedSearchSolver(init, goal)
-    # uninformed_solver.run()
-
+    uninformed_solver = UninformedSearchSolver(init, goal)
     informed_solver = InformedSearchSolver(init, goal)
-    informed_solver.run()
+
+    try:
+        uninformed_runs = uninformed_solver.run(1000)
+        informed_runs, informed_depth = informed_solver.run(1000)
+        print(
+            f"\nUninformed search took {uninformed_runs} iterations to solve the puzzle"
+        )
+        print(
+            f"\nInformed search took {informed_runs} iterations and {informed_depth} depth to solve the puzzle"
+        )
+    except RuntimeError:
+        print("Puzzle has no solution.")
 
 
 if __name__ == "__main__":

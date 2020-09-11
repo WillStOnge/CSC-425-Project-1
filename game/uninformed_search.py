@@ -1,18 +1,24 @@
 from .state import State
 from collections import deque
 import numpy as np
-import ipdb
+import sys
+from typing import Set
 
 
 class UninformedSearchSolver:
-    """Implements BFS to find a solution to an 8-puzzle problem
-    """
+    """Implements BFS to find a solution to an 8-puzzle problem"""
 
-    opened = deque()
-    closed = set()
+    opened: deque = deque()
+    closed: Set[State] = set()
     depth = 0
 
     def __init__(self, current: State, target: State):
+        """Creates State object.
+
+        Args:
+            current (State): Initial State
+            target (State): Target State
+        """
         self.current_state = current
         self.target_state = target
         self.opened.append(current)
@@ -24,8 +30,7 @@ class UninformedSearchSolver:
 
         """
         if not self.current_state.is_solvable():
-            print("UNSOLVABLE")
-            exit(1)
+            raise RuntimeError("Unsolvable")
 
         observed_state: State = self.opened.popleft()
 
@@ -40,22 +45,26 @@ class UninformedSearchSolver:
                 self.opened.append(neighbor)
 
     def is_solved(self) -> bool:
+        """Checks if the search has found a solution
+
+        Returns:
+            bool: is puzzle solved
+        """
         return self.current_state == self.target_state
 
-    def run(self) -> int:
+    def run(self, max_depth: int) -> int:
         """Runs the search"""
-        print(f"Initial State: \n{self.current_state.tile_seq}")
-        print("---------")
-        path = 0
+        iterations = 0
 
         while not self.is_solved():
             self.next_state()
-            path += 1
+            iterations += 1
 
-        print(self.current_state.tile_seq)
-
-        print("It took ", path, " iterations")
+            if iterations >= max_depth:
+                break
+               
+        print("It took ", iterations, " iterations")
         print("The length of the path is: ", self.current_state.depth)
         print("Goal State:")
         print(self.target_state.tile_seq)
-        return path
+        return iterations

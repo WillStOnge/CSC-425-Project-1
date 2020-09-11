@@ -1,7 +1,9 @@
 import numpy as np
 from .state import State
+import sys
+import enum
+from typing import List, Tuple, Optional
 from math import sqrt, floor
-
 """
 This class implement the Best-First-Search (BFS) algorithm along with the Heuristic search strategies
 
@@ -16,9 +18,18 @@ Evaluation function is used to express the quality of informedness of a heuristi
 """
 
 
+class GeneratedStateType(enum.Enum):
+    NEITHER = 1
+    ON_OPEN = 2
+    ON_CLOSED = 3
+
+
 class InformedSearchSolver:
-    opened = []
-    closed = []
+    """Implements Best First Search
+    """
+
+    opened: List[State] = []
+    closed: List[State] = []
     depth = 0
 
     def __init__(self, current: State, target: State):
@@ -26,27 +37,26 @@ class InformedSearchSolver:
         self.target_state = target
         self.opened.append(current)
 
-    def check_inclusive(self, item: State):
+    def check_inclusive(self, item: State) -> Tuple[GeneratedStateType, int]:
         """ Check if the generated state is in open and/or closed. """
-        in_open = 0
-        in_closed = 0
-        ret = [-1, -1]
+        is_in_closed = item in self.closed
+        is_in_open = item in self.opened
 
-        if item in self.closed:
-            in_closed = 1
-            ret[1] = self.closed.index(item)
+        index = -1
+        state_type = GeneratedStateType.NEITHER
 
-        if item in self.opened:
-            in_open = 1
-            ret[1] = self.opened.index(item)
+        if is_in_closed:
+            index = self.closed.index(item)
 
-        if in_open == 0 and in_closed == 0:
-            ret[0] = 1  # The child is not in the open or closed list.
-        elif in_open == 1 and in_closed == 0:
-            ret[0] = 2  # The child is in the open list.
-        elif in_open == 0 and in_closed == 1:
-            ret[0] = 3  # The child is in the closed list.
-        return ret
+        if is_in_open:
+            index = self.opened.index(item)
+
+        if is_in_open and not is_in_closed:
+            state_type = GeneratedStateType.ON_OPEN
+        elif not is_in_open and is_in_closed:
+            state_type = GeneratedStateType.ON_CLOSED
+
+        return state_type, index
 
     def check_conditions(self, child: State):
         """ Checks the inclusivity in the open/closed lists and moves the states accordingly.
@@ -54,30 +64,26 @@ class InformedSearchSolver:
         Args:
             `state` - State object
         """
-        flag = self.check_inclusive(child)
+        state_type, index = self.check_inclusive(child)
 
-        # State is in neither list.
-        if flag[0] == 1:
-            self.heuristic_test(child)
+        if state_type is GeneratedStateType.NEITHER:
+            child.weight = self.heuristic_score(child)
             self.opened.append(child)
 
-        # State is in the open list.
-        elif flag[0] == 2:
+        elif state_type is GeneratedStateType.ON_OPEN:
             if child.depth < self.current_state.depth:
-                self.opened[flag[1]].depth = child.depth
+                self.opened[index].depth = child.depth
 
-        # State is in the closed list.
         else:
             if child.depth < self.current_state.depth:
                 self.closed.remove(child)
                 self.opened.append(child)
 
     def next_state(self):
-        """ Uses the best first search algorithm. The blank tile is represent by '0'. """
-        # Move state to closed.
+        """Find next state"""
+
         if not self.current_state.is_solvable():
-            print("UNSOLVABLE")
-            exit(1)
+            raise RuntimeError("Unsolvable")
 
         self.closed.append(self.current_state)
         self.opened.remove(self.current_state)
@@ -107,8 +113,10 @@ class InformedSearchSolver:
         self.opened.sort(key=lambda a: a.weight)
         self.current_state = self.opened[0]
 
-    def heuristic_test(self, state: State):
-        """Solve the game using heuristic search strategies
+    def heuristic_score(self, state: State) -> int:
+        """Sets the weight to the heuristic value
+        
+        Solve the game using heuristic search strategies
         
         * There are three types of heuristic rules:
         * (1) Tiles out of place
@@ -149,6 +157,7 @@ class InformedSearchSolver:
             for goal_x, goal_y in np.ndindex(target_tiles.shape):
                 if state[current_y][current_x] == self.target_state[goal_y][goal_x]:
                     distance += abs(current_y - goal_y) + abs(current_x - goal_x)
+
         return distance
 
     def tile_reversals(self, state: State) -> int:
@@ -160,14 +169,13 @@ class InformedSearchSolver:
         reversals = 0
 
         current_tiles = state.tile_seq
-        for row in range(len(current_tiles)):
-            for col in range(len(current_tiles[row])):
-                if row != 2:
-                    if state[row][col] == self.target_state[row + 1][col]:
-                        reversals += 1
-                if col != 2:
-                    if state[row][col] == self.target_state[row][col + 1]:
-                        reversals += 1
+        for row, col in np.ndindex(current_tiles.shape):
+            if row != 2:
+                if state[row][col] == self.target_state[row + 1][col]:
+                    reversals += 1
+            if col != 2:
+                if state[row][col] == self.target_state[row][col + 1]:
+                    reversals += 1
 
         return reversals
 
@@ -187,21 +195,28 @@ class InformedSearchSolver:
         return floor(distance)
 
     def is_solved(self) -> bool:
-        return self.current_state == self.target_state
+        """Checks if the search has found a solution
 
-    # You can choose to print all the states on the search path, or just the start and goal state
-    def run(self) -> int:
+        Returns:
+            bool: is puzzle solved
+        """
+        return self.current_state == self.target_state
+      
+    def run(self, max_iterations: int) -> int:
         """Runs the search"""
         print(f"Initial State: \n{self.current_state.tile_seq}")
         print("---------")
-        path = 0
-
+        iterations = 0
+        
         while not self.is_solved():
             self.next_state()
-            path += 1
+            iterations += 1
 
-        print("It took ", path, " iterations")
+            if iterations >= max_iterations:
+                break
+        
+        print("It took ", iterations, " iterations")
         print("The length of the path is: ", self.current_state.depth)
         print("Goal State:")
         print(self.target_state.tile_seq)
-        return path
+        return iterations
