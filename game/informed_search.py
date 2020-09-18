@@ -72,10 +72,8 @@ class InformedSearchSolver:
         state_type, index = self.check_inclusive(child)
 
         if state_type is GeneratedStateType.NEITHER:
-            import ipdb
 
             child.weight = child.heuristic_score(self.target_state, self.depth)
-            # child.weight = self.current_state.heuristic_score(child)
 
             self.opened.append(child)
 
