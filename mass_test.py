@@ -19,8 +19,10 @@ def mass_test(iterations: int):
             informed_solver = InformedSearchSolver(init_state, goal_state)
             uninformed_solver = UninformedSearchSolver(init_state, goal_state)
 
+            sys.stdout = open(os.devnull, 'w')
             informed_path = informed_solver.run()
             uninformed_path = uninformed_solver.run()
+            sys.stdout = sys.__stdout__
 
             if informed_path > uninformed_path:
                 print("Iteration", i, "- Informed path was longer than the uninformed")
