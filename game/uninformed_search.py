@@ -19,8 +19,13 @@ class UninformedSearchSolver:
             current (State): Initial State
             target (State): Target State
         """
+
         self.current_state = current
         self.target_state = target
+
+        if not self.is_solvable(self.current_state):
+            raise RuntimeError("Unsolvable")
+
         self.opened.append(current)
 
     def next_state(self):
@@ -29,18 +34,17 @@ class UninformedSearchSolver:
         previously known as:'state_walk'
 
         """
-        if not self.current_state.is_solvable():
-            raise RuntimeError("Unsolvable")
+
+        if self.is_solved():
+            raise StopIteration
 
         observed_state: State = self.opened.popleft()
-
-        if np.all(observed_state.tile_seq == self.target_state.tile_seq):
-            self.current_state = observed_state
-
         self.closed.add(observed_state)
 
+        self.current_state = observed_state
+        self.depth = observed_state.depth
+
         for neighbor in observed_state.neighbors():
-            # print(neighbor in self.closed)
             if neighbor not in self.closed and neighbor not in self.opened:
                 self.opened.append(neighbor)
 
@@ -52,7 +56,30 @@ class UninformedSearchSolver:
         """
         return self.current_state == self.target_state
 
-    def run(self, max_depth: int) -> int:
+    def is_solvable(self, state: State) -> bool:
+
+        return self.tile_reversals(self.current_state) % 2 == 0
+
+    def tile_reversals(self, state: State) -> int:
+        """Counts tiles that are reversed to each other
+
+        Returns:
+            int: reversed tiles
+        """
+        reversals = 0
+
+        current_tiles = state.tile_seq
+        for row, col in np.ndindex(current_tiles.shape):
+            if row != 2:
+                if state[row][col] == self.target_state[row + 1][col]:
+                    reversals += 1
+            if col != 2:
+                if state[row][col] == self.target_state[row][col + 1]:
+                    reversals += 1
+
+        return reversals
+
+    def run(self) -> int:
         """Runs the search"""
         iterations = 0
 
@@ -60,11 +87,4 @@ class UninformedSearchSolver:
             self.next_state()
             iterations += 1
 
-            if iterations >= max_depth:
-                break
-               
-        print("It took ", iterations, " iterations")
-        print("The length of the path is: ", self.current_state.depth)
-        print("Goal State:")
-        print(self.target_state.tile_seq)
         return iterations

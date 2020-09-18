@@ -9,21 +9,6 @@ class State:
         self.depth = depth
         self.weight = weight
 
-    def is_solvable(self) -> bool:
-        """Detects if the current puzzle has a solution
-
-        Returns:
-            bool: if the puzzle is solvable
-        """
-        inv_count = 0
-        arr = self.flatten()
-        for i in range(8):
-            for j in range(i + 1, 9):
-                if arr[j] != 0 and arr[i] and arr[i] > arr[j]:
-                    inv_count += 1
-
-        return inv_count % 2 == 0
-
     def flatten(self) -> "np.ndarray[np.float64]":
         """Flattens the nested array structure into a one dimensional array
 

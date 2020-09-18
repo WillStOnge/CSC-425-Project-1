@@ -28,10 +28,13 @@ def main():
     informed_solver = InformedSearchSolver(init, goal)
 
     try:
-        uninformed_runs = uninformed_solver.run(1000)
-        informed_runs = informed_solver.run(1000)
+
+        print(f"Initial State:\n{init_tile}")
+        print(f"Goal State:\n{goal_tile}")
+        uninformed_runs = uninformed_solver.run()
+        informed_runs = informed_solver.run()
         print(
-            f"\nUninformed search took {uninformed_runs} iterations to solve the puzzle"
+            f"\nUninformed search took {uninformed_runs} iterations and {uninformed_solver.depth} to solve the puzzle"
         )
         print(
             f"\nInformed search took {informed_runs} iterations and {informed_solver.depth} depth to solve the puzzle"
