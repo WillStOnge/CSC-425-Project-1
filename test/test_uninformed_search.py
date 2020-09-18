@@ -2,7 +2,6 @@ import unittest
 from game.state import State
 from game.uninformed_search import UninformedSearchSolver
 import numpy as np
-import ipdb
 
 
 class TestUninformedSearch(unittest.TestCase):
