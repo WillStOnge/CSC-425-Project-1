@@ -5,6 +5,7 @@ import numpy as np
 import sys
 import os
 
+
 def mass_test(iterations: int):
     for i in range(iterations):
         arr = np.arange(9).reshape((3, 3))
@@ -14,27 +15,25 @@ def mass_test(iterations: int):
         arr1 = np.arange(9).reshape((3, 3))
         np.random.shuffle(arr1)
         goal_state = State(arr1)
-
-        informed_solver = InformedSearchSolver(init_state, goal_state)
-        uninformed_solver = UninformedSearchSolver(init_state, goal_state)
-
         try:
-            sys.stdout = open(os.devnull, 'w')
-            informed_path = informed_solver.run(100)
-            uninformed_path = uninformed_solver.run(100)
-            sys.stdout = sys.__stdout__
+            informed_solver = InformedSearchSolver(init_state, goal_state)
+            uninformed_solver = UninformedSearchSolver(init_state, goal_state)
+
+            informed_path = informed_solver.run()
+            uninformed_path = uninformed_solver.run()
 
             if informed_path > uninformed_path:
-                print('Iteration', i, '- Informed path was longer than the uninformed')
+                print("Iteration", i, "- Informed path was longer than the uninformed")
                 print(init_state.tile_seq)
-                print('----------')
+                print("----------")
                 print(goal_state.tile_seq)
-        except Exception:
-            continue
+        except RuntimeError:
+            pass
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print('Usage: python mass_test.py testCount')
+        print("Usage: python mass_test.py testCount")
         exit(1)
     mass_test(int(sys.argv[1]))
-    
+

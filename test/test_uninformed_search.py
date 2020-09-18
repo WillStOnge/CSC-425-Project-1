@@ -5,7 +5,7 @@ import numpy as np
 import ipdb
 
 
-class TestUninformedSolver(unittest.TestCase):
+class TestUninformedSearch(unittest.TestCase):
     def test_state_walk(self):
         init_tile = np.array([[1, 2, 3], [0, 4, 6], [7, 5, 8]])
         goal_tile = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 0]])
@@ -73,4 +73,5 @@ class TestUninformedSolver(unittest.TestCase):
 
         self.assertEqual(len(uninformed_solver.opened), 10)
         self.assertEqual(len(uninformed_solver.closed), 14)
-        uninformed_solver.next_state()
+        with self.assertRaises(StopIteration):
+            uninformed_solver.next_state()

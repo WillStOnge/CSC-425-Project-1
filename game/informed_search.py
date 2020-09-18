@@ -4,6 +4,7 @@ import sys
 import enum
 from typing import List, Tuple, Optional
 from math import sqrt, floor
+
 """
 This class implement the Best-First-Search (BFS) algorithm along with the Heuristic search strategies
 
@@ -35,7 +36,11 @@ class InformedSearchSolver:
     def __init__(self, current: State, target: State):
         self.current_state = current
         self.target_state = target
-        self.opened.append(current)
+
+        if not self.is_solvable():
+            raise RuntimeError("Unsolvable")
+
+        self.opened = [current]
 
     def check_inclusive(self, item: State) -> Tuple[GeneratedStateType, int]:
         """ Check if the generated state is in open and/or closed. """
@@ -81,33 +86,17 @@ class InformedSearchSolver:
 
     def next_state(self):
         """Find next state"""
+        if self.is_solved():
+            raise StopIteration
 
-        if not self.current_state.is_solvable():
-            raise RuntimeError("Unsolvable")
-
-        self.closed.append(self.current_state)
-        self.opened.remove(self.current_state)
+        observed_state = self.opened.pop(0)
+        self.closed.append(observed_state)
 
         # Get current states graph.
-        current_state = self.current_state.tile_seq
-        (row, col) = np.argwhere(current_state == 0).flatten()
         self.depth += 1
 
-        if (row - 1) >= 0:
-            temp_state = self.current_state.move("up")
-            self.check_conditions(temp_state)
-
-        if (row + 1) < len(current_state):
-            temp_state = self.current_state.move("down")
-            self.check_conditions(temp_state)
-
-        if (col - 1) >= 0:
-            temp_state = self.current_state.move("left")
-            self.check_conditions(temp_state)
-
-        if (col + 1) < len(current_state):
-            temp_state = self.current_state.move("right")
-            self.check_conditions(temp_state)
+        for item in observed_state.neighbors():
+            self.check_conditions(item)
 
         # Sort the open list first by h(n) then g(n).
         self.opened.sort(key=lambda a: a.weight)
@@ -191,7 +180,9 @@ class InformedSearchSolver:
         for current_x, current_y in np.ndindex(current_tiles.shape):
             for goal_x, goal_y in np.ndindex(target_tiles.shape):
                 if state[current_y][current_x] == self.target_state[goal_y][goal_x]:
-                    distance += sqrt(pow(current_y - goal_y, 2) + pow(current_x - goal_x, 2))
+                    distance += sqrt(
+                        pow(current_y - goal_y, 2) + pow(current_x - goal_x, 2)
+                    )
         return floor(distance)
 
     def is_solved(self) -> bool:
@@ -201,22 +192,21 @@ class InformedSearchSolver:
             bool: is puzzle solved
         """
         return self.current_state == self.target_state
-      
-    def run(self, max_iterations: int) -> int:
+
+    def is_solvable(self) -> bool:
+        """Detects if the current puzzle has a solution
+
+        Returns:
+            bool: if the puzzle is solvable
+        """
+
+        return self.tile_reversals(self.current_state) % 2 == 0
+
+    def run(self) -> int:
         """Runs the search"""
-        print(f"Initial State: \n{self.current_state.tile_seq}")
-        print("---------")
         iterations = 0
-        
         while not self.is_solved():
             self.next_state()
             iterations += 1
 
-            if iterations >= max_iterations:
-                break
-        
-        print("It took ", iterations, " iterations")
-        print("The length of the path is: ", self.current_state.depth)
-        print("Goal State:")
-        print(self.target_state.tile_seq)
         return iterations

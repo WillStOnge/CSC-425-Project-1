@@ -4,22 +4,7 @@ from game.informed_search import InformedSearchSolver
 import numpy as np
 
 
-class TestInformedSolver(unittest.TestCase):
-    def test_next_state(self):
-        init_tile = np.array([[1, 2, 3], [0, 4, 6], [7, 5, 8]])
-        goal_tile = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 0]])
-
-        init = State(init_tile, 0, 0)
-        goal = State(goal_tile, 0, 0)
-
-        informed_solver = InformedSearchSolver(init, goal)
-        path = 0
-        while not informed_solver.is_solved():
-            informed_solver.next_state()
-            path += 1
-
-        self.assertEqual(path, 3)
-
+class TestInformedSearch(unittest.TestCase):
     def test_misplaced_tiles(self):
         init_tile = np.array([[1, 2, 3], [0, 4, 6], [7, 5, 8]])
         goal_tile = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 0]])
@@ -34,7 +19,7 @@ class TestInformedSolver(unittest.TestCase):
 
     def test_reversed_tiles(self):
         # Test row swaps
-        init_tile = np.array([[1, 2, 3], [4, 5, 6], [8, 7, 0]])
+        init_tile = np.array([[1, 2, 3], [4, 6, 5], [8, 7, 0]])
         goal_tile = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 0]])
 
         init = State(init_tile, 0, 0)
@@ -43,10 +28,10 @@ class TestInformedSolver(unittest.TestCase):
         informed_solver = InformedSearchSolver(init, goal)
         tile = informed_solver.tile_reversals(init)
 
-        self.assertEqual(tile, 1)
+        self.assertEqual(tile, 2)
 
         # Test column swaps
-        init_tile = np.array([[1, 2, 6], [4, 5, 3], [7, 8, 0]])
+        init_tile = np.array([[1, 2, 6], [4, 8, 3], [7, 5, 0]])
         goal_tile = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 0]])
 
         init = State(init_tile, 0, 0)
@@ -55,7 +40,7 @@ class TestInformedSolver(unittest.TestCase):
         informed_solver = InformedSearchSolver(init, goal)
         tile = informed_solver.tile_reversals(init)
 
-        self.assertEqual(tile, 1)
+        self.assertEqual(tile, 2)
 
         # Test both
         init_tile = np.array([[1, 2, 6], [4, 5, 3], [8, 7, 0]])
@@ -102,3 +87,28 @@ class TestInformedSolver(unittest.TestCase):
         tile = informed_solver.euclidean_distance(init)
 
         self.assertEqual(tile, 7)
+
+    def test_next_state(self):
+        init_tile = np.array([[1, 2, 3], [0, 4, 6], [7, 5, 8]])
+        goal_tile = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 0]])
+
+        init = State(init_tile, 0, 0)
+        goal = State(goal_tile, 0, 0)
+
+        informed_solver = InformedSearchSolver(init, goal)
+
+        self.assertEqual(len(informed_solver.opened), 1)
+        self.assertEqual(len(informed_solver.closed), 0)
+        informed_solver.next_state()
+
+        self.assertEqual(len(informed_solver.opened), 3)
+        self.assertEqual(len(informed_solver.closed), 1)
+        informed_solver.next_state()
+
+        self.assertEqual(len(informed_solver.opened), 5)
+        self.assertEqual(len(informed_solver.closed), 2)
+        informed_solver.next_state()
+
+        with self.assertRaises(StopIteration):
+            informed_solver.next_state()
+
