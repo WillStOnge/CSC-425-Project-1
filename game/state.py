@@ -1,6 +1,7 @@
 import numpy as np
 from copy import deepcopy
 from typing import List
+from math import sqrt, floor
 
 
 class State:
@@ -48,7 +49,6 @@ class State:
             target_x = current_x
             target_y = current_y - 1
 
-            # ipdb.set_trace()
             new_state.tile_seq[current_y][current_x] = new_state.tile_seq[target_y][
                 target_x
             ]
@@ -121,6 +121,93 @@ class State:
             pass
 
         return neighbors
+
+    def heuristic_score(self, target_state: "State", current_depth: int) -> int:
+        """Sets the weight to the heuristic value
+        
+        Solve the game using heuristic search strategies
+        
+        * There are three types of heuristic rules:
+        * (1) Tiles out of place
+        * (2) Sum of distances out of place
+        * (3) 2 x the number of direct tile reversals
+        
+        * evaluation function
+        * f(n) = g(n) + h(n)
+        * g(n) = depth of path length to start state
+        * h(n) = (1) + (2) + (3)
+        """
+        h1 = self.misplaced_tiles(target_state)
+        h2 = self.misplaced_distances(target_state)
+        h3 = 2 * self.tile_reversals(target_state)
+        h4 = self.euclidean_distance(target_state)
+
+        # Set the heuristic value for current state
+        return current_depth + h1 + h2 + h3 + h4
+
+    def misplaced_tiles(self, target_state: "State") -> int:
+        """Counts all misplaced tiles
+
+        Returns:
+            int: misplaced tile count
+        """
+        return np.sum(self.tile_seq != target_state.tile_seq)
+
+    def misplaced_distances(self, target_state: "State") -> int:
+        """ Calculates Manhattan distance 
+        
+        Returns:
+            int: misplaced distances
+        """
+        distance = 0
+
+        current_tiles = self.tile_seq
+        target_tiles = target_state.tile_seq
+
+        for current_x, current_y in np.ndindex(current_tiles.shape):
+            for goal_x, goal_y in np.ndindex(target_tiles.shape):
+                if self[current_y][current_x] == target_state[goal_y][goal_x]:
+                    distance += abs(current_y - goal_y) + abs(current_x - goal_x)
+
+        return distance
+
+    def euclidean_distance(self, target_state: "State") -> int:
+        """ Calculates Euclidean distance 
+        
+        Returns:
+            int: misplaced distances
+        """
+        distance = 0
+
+        current_tiles = self.tile_seq
+        target_tiles = target_state.tile_seq
+
+        for current_x, current_y in np.ndindex(current_tiles.shape):
+            for goal_x, goal_y in np.ndindex(target_tiles.shape):
+                if self[current_y][current_x] == target_state[goal_y][goal_x]:
+                    distance += sqrt(
+                        pow(current_y - goal_y, 2) + pow(current_x - goal_x, 2)
+                    )
+        return floor(distance)
+
+    def tile_reversals(self, target_state: "State") -> int:
+        """Counts tiles that are reversed to each other
+
+        Returns:
+            int: reversed tiles
+        """
+        reversals = 0
+
+        current_tiles = self.tile_seq
+        for row, col in np.ndindex(current_tiles.shape):
+            if row != 2:
+                if self[row][col] == target_state[row + 1][col]:
+                    reversals += 1
+            if col != 2:
+                if self[row][col] == target_state[row][col + 1]:
+                    reversals += 1
+
+        return reversals
 
     def __getitem__(self, index: int) -> List[int]:
         return self.tile_seq[index]
