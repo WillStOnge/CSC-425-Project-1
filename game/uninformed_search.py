@@ -58,26 +58,7 @@ class UninformedSearchSolver:
 
     def is_solvable(self, state: State) -> bool:
 
-        return self.tile_reversals(self.current_state) % 2 == 0
-
-    def tile_reversals(self, state: State) -> int:
-        """Counts tiles that are reversed to each other
-
-        Returns:
-            int: reversed tiles
-        """
-        reversals = 0
-
-        current_tiles = state.tile_seq
-        for row, col in np.ndindex(current_tiles.shape):
-            if row != 2:
-                if state[row][col] == self.target_state[row + 1][col]:
-                    reversals += 1
-            if col != 2:
-                if state[row][col] == self.target_state[row][col + 1]:
-                    reversals += 1
-
-        return reversals
+        return self.current_state.tile_reversals(state) % 2 == 0
 
     def run(self) -> int:
         """Runs the search"""

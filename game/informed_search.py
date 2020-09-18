@@ -72,7 +72,9 @@ class InformedSearchSolver:
         state_type, index = self.check_inclusive(child)
 
         if state_type is GeneratedStateType.NEITHER:
-            child.weight = self.heuristic_score(child)
+
+            child.weight = child.heuristic_score(self.target_state, self.depth)
+
             self.opened.append(child)
 
         elif state_type is GeneratedStateType.ON_OPEN:
@@ -88,12 +90,11 @@ class InformedSearchSolver:
         """Find next state"""
         if self.is_solved():
             raise StopIteration
-
         observed_state = self.opened.pop(0)
         self.closed.append(observed_state)
 
         # Get current states graph.
-        self.depth += 1
+        self.depth = observed_state.depth + 1
 
         for item in observed_state.neighbors():
             self.check_conditions(item)
@@ -101,89 +102,6 @@ class InformedSearchSolver:
         # Sort the open list first by h(n) then g(n).
         self.opened.sort(key=lambda a: a.weight)
         self.current_state = self.opened[0]
-
-    def heuristic_score(self, state: State) -> int:
-        """Sets the weight to the heuristic value
-        
-        Solve the game using heuristic search strategies
-        
-        * There are three types of heuristic rules:
-        * (1) Tiles out of place
-        * (2) Sum of distances out of place
-        * (3) 2 x the number of direct tile reversals
-        
-        * evaluation function
-        * f(n) = g(n) + h(n)
-        * g(n) = depth of path length to start state
-        * h(n) = (1) + (2) + (3)
-        """
-        h1 = self.misplaced_tiles(state)
-        h2 = self.misplaced_distances(state)
-        h3 = 2 * self.tile_reversals(state)
-        h4 = self.euclidean_distance(state)
-
-        # Set the heuristic value for current state
-        return state.depth + h1 + h2 + h3 + h4
-
-    def misplaced_tiles(self, state: State) -> int:
-        """Counts all misplaced tiles
-
-        Returns:
-            int: misplaced tile count
-        """
-        return np.sum(state.tile_seq != self.target_state.tile_seq)
-
-    def misplaced_distances(self, state: State) -> int:
-        """ Calculates Manhattan distance 
-        
-        Returns:
-            int: misplaced distances
-        """
-        distance = 0
-        current_tiles = state.tile_seq
-        target_tiles = self.target_state.tile_seq
-        for current_x, current_y in np.ndindex(current_tiles.shape):
-            for goal_x, goal_y in np.ndindex(target_tiles.shape):
-                if state[current_y][current_x] == self.target_state[goal_y][goal_x]:
-                    distance += abs(current_y - goal_y) + abs(current_x - goal_x)
-
-        return distance
-
-    def tile_reversals(self, state: State) -> int:
-        """Counts tiles that are reversed to each other
-
-        Returns:
-            int: reversed tiles
-        """
-        reversals = 0
-
-        current_tiles = state.tile_seq
-        for row, col in np.ndindex(current_tiles.shape):
-            if row != 2:
-                if state[row][col] == self.target_state[row + 1][col]:
-                    reversals += 1
-            if col != 2:
-                if state[row][col] == self.target_state[row][col + 1]:
-                    reversals += 1
-
-        return reversals
-
-    def euclidean_distance(self, state: State) -> int:
-        """ Calculates Euclidean distance 
-        
-        Returns:
-            int: misplaced distances
-        """
-        distance = 0
-        current_tiles = state.tile_seq
-        target_tiles = self.target_state.tile_seq
-        for current_x, current_y in np.ndindex(current_tiles.shape):
-            for goal_x, goal_y in np.ndindex(target_tiles.shape):
-                if state[current_y][current_x] == self.target_state[goal_y][goal_x]:
-                    distance += sqrt(
-                        pow(current_y - goal_y, 2) + pow(current_x - goal_x, 2)
-                    )
-        return floor(distance)
 
     def is_solved(self) -> bool:
         """Checks if the search has found a solution
@@ -200,12 +118,13 @@ class InformedSearchSolver:
             bool: if the puzzle is solvable
         """
 
-        return self.tile_reversals(self.current_state) % 2 == 0
+        return self.current_state.tile_reversals(self.target_state) % 2 == 0
 
     def run(self) -> int:
         """Runs the search"""
         iterations = 0
         while not self.is_solved():
+            print(self.current_state)
             self.next_state()
             iterations += 1
 
